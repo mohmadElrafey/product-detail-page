@@ -60,7 +60,7 @@ function Newsletter() {
 
 export function Footer() {
   return (
-    <footer className="bg-surface pt-[45px] pb-8 lg:pt-[72px]">
+    <footer className="bg-surface pt-[45px] pb-8 lg:pt-[72px] lg:pb-[29px]">
       <div className="page-container">
         <div className="flex flex-col gap-12 lg:flex-row lg:justify-between lg:gap-10">
           <div className="flex flex-col items-start lg:h-[160px]">
@@ -110,7 +110,7 @@ export function Footer() {
 
         <DashedRule className="mt-12 lg:mt-[72px]" />
 
-        <div className="mt-6 flex flex-col gap-6 lg:h-[22px] lg:flex-row lg:items-center lg:justify-between">
+        <div className="mt-6 flex flex-col gap-6 lg:mt-[23px] lg:h-[22px] lg:flex-row lg:items-center lg:justify-between">
           <p className="text-sm leading-[22px] text-footer">© Achilles 2001 - {CURRENT_YEAR}</p>
           <div className="flex items-center gap-4 self-end lg:gap-8 lg:self-auto">
             <button type="button" className="flex items-center gap-2 text-sm leading-6 font-medium text-title">

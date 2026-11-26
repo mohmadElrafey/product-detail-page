@@ -14,7 +14,7 @@ interface ReviewItemProps {
 }
 
 const voteButton =
-  'inline-flex h-8 items-center justify-center gap-1 rounded-md border border-hairline px-2.5 text-xs leading-[1.6] text-deep transition-colors hover:bg-surface lg:h-[50px] lg:gap-2 lg:rounded-lg lg:px-3 lg:text-base'
+  'inline-flex h-8 items-center justify-center gap-1 rounded-md border border-hairline text-xs leading-[1.6] text-deep transition-colors hover:bg-surface lg:h-[50px] lg:gap-2 lg:rounded-lg lg:text-base'
 
 export const ReviewItem = memo(function ReviewItem({ review, vote, onVote }: ReviewItemProps) {
   const likes = review.likes + (vote === 'like' ? 1 : 0)
@@ -46,7 +46,7 @@ export const ReviewItem = memo(function ReviewItem({ review, vote, onVote }: Rev
             aria-pressed={vote === 'like'}
             aria-label={`Helpful, ${likes} people found this helpful`}
             onClick={() => onVote(review.id, 'like')}
-            className={cn(voteButton, 'min-w-[62px] lg:min-w-20')}
+            className={cn(voteButton, 'min-w-[62px] px-1 lg:min-w-20')}
           >
             <Icon
               name={vote === 'like' ? 'likeFilled' : 'like'}
@@ -59,7 +59,7 @@ export const ReviewItem = memo(function ReviewItem({ review, vote, onVote }: Rev
             aria-pressed={vote === 'dislike'}
             aria-label="Not helpful"
             onClick={() => onVote(review.id, 'dislike')}
-            className={cn(voteButton, 'w-8 px-0 lg:w-12', vote === 'dislike' && 'bg-selected')}
+            className={cn(voteButton, 'w-8 lg:w-12', vote === 'dislike' && 'bg-selected')}
           >
             <Icon name="dislike" className="size-5 lg:size-6" />
           </button>

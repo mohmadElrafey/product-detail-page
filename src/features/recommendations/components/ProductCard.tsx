@@ -11,7 +11,7 @@ import type { ProductSummary } from '../data/recommendations.fixture'
 export const ProductCard = memo(function ProductCard({ product }: { product: ProductSummary }) {
   return (
     <article className="group relative flex flex-col gap-3 lg:gap-4">
-      <div className="aspect-[212/284] overflow-hidden rounded-md bg-surface lg:rounded-lg">
+      <div className="aspect-[157/210] overflow-hidden lg:aspect-[212/284] rounded-md bg-surface lg:rounded-lg">
         <img
           src={product.image}
           alt=""

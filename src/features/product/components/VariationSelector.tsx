@@ -78,8 +78,11 @@ export function VariationSelector({ variation, value, isAvailable, onSelect, err
         aria-invalid={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
         className={cn(
-          'grid grid-cols-4 gap-x-[13.7px] lg:flex lg:flex-wrap lg:gap-[14px]',
-          isSwatch ? 'gap-y-[13.7px]' : 'gap-y-[22px] lg:gap-y-[14px]',
+          'grid gap-x-[13.7px] lg:flex lg:flex-wrap lg:gap-[14px]',
+          // Mobile swatches alternate 73.7/72.7px wide in Figma; sizes are 4 equal columns.
+          isSwatch
+            ? 'grid-cols-[repeat(2,minmax(0,73.7px)_minmax(0,72.7px))] justify-between gap-y-[13.7px]'
+            : 'grid-cols-4 gap-y-[22px] lg:gap-y-[14px]',
         )}
       >
         {variation.options.map((option, index) => (
