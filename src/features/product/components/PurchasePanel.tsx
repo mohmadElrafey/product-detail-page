@@ -25,9 +25,9 @@ const sizeChartLink = (
 const asideFor = (variation: Variation) => (variation.kind === 'text' ? sizeChartLink : undefined)
 
 /**
- * Variations → CTAs: 40px between groups (32 mobile), 24px between buttons.
- * Size → buttons is 40px (32 mobile): the parent stack's gap (28/24) + this mt (12/8).
- * Tightened from Figma's 56/48 on request.
+ * Variations → CTAs (Figma): 40px between groups (32 mobile), 24px between buttons.
+ * Desktop buttons follow Figma sizing: Add To Cart = Fill, Checkout Now = Fixed 200px.
+ * Size → buttons is 56px (48 mobile) = the parent stack's gap (40/32) + this mt (16).
  * Quantity is chosen in the cart drawer (each click adds one unit).
  */
 export function PurchasePanel({ product, selection }: PurchasePanelProps) {
@@ -53,9 +53,9 @@ export function PurchasePanel({ product, selection }: PurchasePanelProps) {
         ))}
       </div>
 
-      <div ref={ctaRef} className="mt-2 flex flex-col items-start gap-[18px] lg:mt-3 lg:flex-row lg:gap-6">
+      <div ref={ctaRef} className="mt-4 flex flex-col items-start gap-[18px] lg:flex-row lg:gap-6">
         <Button
-          className="w-[296px] max-w-full lg:flex-[296_1_0%]"
+          className="w-[296px] max-w-full lg:w-auto lg:flex-1"
           disabled={outOfStock}
           onClick={() => add()}
           aria-describedby={hasMissing ? 'cta-hint' : undefined}
@@ -72,7 +72,7 @@ export function PurchasePanel({ product, selection }: PurchasePanelProps) {
         </Button>
         <Button
           variant="outline"
-          className="w-[187px] max-w-full lg:w-auto lg:flex-[200_1_0%]"
+          className="w-[187px] max-w-full lg:w-[200px] lg:shrink-0"
           disabled={outOfStock}
           onClick={() => add({ openDrawer: true })}
         >

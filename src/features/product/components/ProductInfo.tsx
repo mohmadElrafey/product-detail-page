@@ -40,7 +40,7 @@ export function ProductInfo({ product, selection, rating }: ProductInfoProps) {
 
       <DashedRule className="mt-7" />
 
-      <div className="mt-6 flex flex-col gap-6 lg:mt-7 lg:gap-7">
+      <div className="mt-6 flex flex-col gap-8 lg:mt-7 lg:gap-10">
         <ProductDescription html={product.descriptionHtml} />
         <PurchasePanel product={product} selection={selection} />
       </div>

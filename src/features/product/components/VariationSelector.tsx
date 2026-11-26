@@ -121,7 +121,7 @@ interface OptionButtonProps {
 
 function OptionButton({ option, kind, checked, available, tabIndex, onClick, onKeyDown, ref }: OptionButtonProps) {
   const base =
-    'relative h-[39px] w-full rounded-md transition-[background-color,border-color,box-shadow] duration-150 lg:h-10 lg:w-[75px] lg:rounded-lg'
+    'relative h-[39.3px] w-full rounded-md transition-[background-color,border-color,box-shadow] duration-150 lg:h-10 lg:w-[75px] lg:rounded-lg'
 
   return (
     <button

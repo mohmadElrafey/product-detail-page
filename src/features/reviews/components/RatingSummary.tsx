@@ -6,10 +6,10 @@ import type { ReviewSummary } from '../model/reviews'
 
 /**
  * Score ring: an SVG circle whose `stroke-dasharray` encodes `average / 5`,
- * starting at 3 o'clock like the Figma arc. Thin 6% stroke.
+ * starting at 3 o'clock like the Figma arc.
  */
 function RatingRing({ value }: { value: number }) {
-  const strokeWidth = 6
+  const strokeWidth = 5 // Figma ellipse innerRadius 0.9 → ring is 5% of the diameter
   const radius = 50 - strokeWidth / 2
   const circumference = 2 * Math.PI * radius
   const progress = Math.min(value / 5, 1)
@@ -39,7 +39,7 @@ function RatingBars({ summary }: { summary: ReviewSummary }) {
   return (
     <ul className="flex flex-col gap-3" aria-label="Rating distribution">
       {summary.distribution.map(({ stars, count }) => (
-        <li key={stars} className="flex items-center gap-3 lg:gap-6">
+        <li key={stars} className="flex h-[17px] items-center gap-3 lg:h-[26px] lg:gap-6">
           <span className="flex w-10 shrink-0 items-center text-xs leading-[1.6] font-medium text-deep lg:w-[49px] lg:gap-1 lg:text-base">
             {stars.toFixed(1)}
             <Icon name="star" className="size-4 text-star lg:size-5" />
@@ -70,7 +70,7 @@ export function RatingSummary({ summary }: { summary: ReviewSummary }) {
   return (
     <DashedBox
       radius={8}
-      className="grid gap-6 px-4 py-4 lg:grid-cols-[228px_1fr] lg:gap-[120px] lg:px-6 lg:py-6"
+      className="grid gap-6 px-[17px] py-4 lg:grid-cols-[228px_1fr] lg:items-start lg:gap-[120px] lg:px-6 lg:py-6"
     >
       <div className="flex items-center gap-4">
         <RatingRing value={summary.average} />

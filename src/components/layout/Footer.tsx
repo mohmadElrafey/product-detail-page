@@ -63,14 +63,14 @@ export function Footer() {
     <footer className="bg-surface pt-[45px] pb-8 lg:pt-[72px]">
       <div className="page-container">
         <div className="flex flex-col gap-12 lg:flex-row lg:justify-between lg:gap-10">
-          <div className="flex flex-col items-start">
+          <div className="flex flex-col items-start lg:h-[160px]">
             <Logo />
             <div className="mt-10">
               <Newsletter />
             </div>
             <ul className="mt-6 flex gap-4 lg:mt-5" aria-label="Social media">
               {SOCIALS.map((social) => (
-                <li key={social.icon}>
+                <li key={social.icon} className="flex">
                   <a
                     href={social.href}
                     target="_blank"
@@ -88,7 +88,7 @@ export function Footer() {
           <div className="grid grid-cols-2 gap-x-[58px] gap-y-6 sm:grid-cols-3 lg:flex lg:gap-[120px]">
             {COLUMNS.map((column) => (
               <nav key={column.title} aria-label={column.title} className="w-[134px]">
-                <h3 className="text-lg leading-6 font-medium text-title lg:text-sm lg:font-semibold">
+                <h3 className="text-lg leading-6 font-medium text-title lg:h-[22px] lg:text-sm lg:font-semibold">
                   {column.title}
                 </h3>
                 <ul className="mt-4 flex flex-col gap-3">
@@ -96,7 +96,7 @@ export function Footer() {
                     <li key={link}>
                       <a
                         href={`/${slugify(link)}`}
-                        className="text-sm leading-[22px] text-footer transition-colors hover:text-ink lg:text-ink lg:hover:text-secondary"
+                        className="block text-sm leading-[22px] text-footer transition-colors hover:text-ink lg:text-ink lg:hover:text-secondary"
                       >
                         {link}
                       </a>
@@ -110,7 +110,7 @@ export function Footer() {
 
         <DashedRule className="mt-12 lg:mt-[72px]" />
 
-        <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="mt-6 flex flex-col gap-6 lg:h-[22px] lg:flex-row lg:items-center lg:justify-between">
           <p className="text-sm leading-[22px] text-footer">© Achilles 2001 - {CURRENT_YEAR}</p>
           <div className="flex items-center gap-4 self-end lg:gap-8 lg:self-auto">
             <button type="button" className="flex items-center gap-2 text-sm leading-6 font-medium text-title">

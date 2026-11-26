@@ -74,8 +74,9 @@ export function Header({ categories }: { categories: Category[] }) {
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
-    <header className="page-container pt-4 lg:pt-[22px]">
-      <div className="flex items-center justify-between">
+    <header className="page-container pt-6 lg:pt-[31px]">
+      {/* Row height = logo height (27 / 32px, Figma). 40px touch targets overflow it on purpose. */}
+      <div className="flex h-[27px] items-center justify-between lg:h-8">
         <Logo />
 
         {/* Desktop: search · Categories · Sign in · wishlist · cart (32/42px gaps from Figma) */}
@@ -112,7 +113,7 @@ export function Header({ categories }: { categories: Category[] }) {
         </div>
       </div>
 
-      <DashedRule className="mt-4 lg:mt-[22px]" />
+      <DashedRule className="mt-6 lg:mt-[31px]" />
 
       <Sheet open={menuOpen} onClose={() => setMenuOpen(false)} title="Menu" side="left">
         <nav aria-label="Mobile" className="flex flex-col p-5">

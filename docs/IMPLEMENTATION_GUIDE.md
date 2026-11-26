@@ -21,6 +21,7 @@
 15. [الحدود الحالية والخطوات الجاية](#15-الحدود-الحالية-والخطوات-الجاية)
 16. [أسئلة متوقعة في النقاش وإجاباتها](#16-أسئلة-متوقعة-في-النقاش)
 17. [جولة التعديلات التانية + مراجعة الـ Skills](#17-جولة-التعديلات-التانية)
+18. [التحقق من الـ Pixel perfect بالقياس](#18-التحقق-من-الـ-pixel-perfect-بالقياس)
 
 ---
 
@@ -628,13 +629,13 @@ Figma بيستخدم dash pattern `[6, 6]` بسمك 0.5px. CSS `border-style: da
 | --- | --- | --- |
 | 1 | الـ Description نص مش نقاط | `htmlToPlainText` (DOMParser) بيحوّل القوايم والفقرات لجمل |
 | 2 | "See More" لازقة في آخر كلمة | `useTextClamp`: twin مخفي + binary search + قص على حدود الكلمة |
-| 3 | تقليل المسافة بين Color والـ Description | من 40 لـ 28px (desktop) ومن 32 لـ 24px (mobile) |
+| 3 | تقليل المسافة بين Color والـ Description | اتعمل، وبعدين **اترجّع لقيمة Figma** (40 و32px) في جولة الـ pixel perfect |
 | 4 | شيل Quantity | اتشال من الصفحة، والكمية في الـ drawer. وكمان اتشال الـ flag `showQuantity` اللي بقى dead code |
 | 5 | عدد على أيقونة القلب | `CountBadge` مشترك بين الـ cart والـ wishlist، ومعاه `aria-label` "Wishlist, 1 item" |
-| 6 | stroke أرفع لدايرة التقييم | من 10% لـ 6% من القطر |
-| 7 | padding أقل في الـ header | من 31 لـ 22px (desktop) ومن 24 لـ 16px (mobile) |
-| 8 | مسافة أقل بين Size وزرار Add To Cart | من حوالي 84 لـ 40px (desktop) ومن 72 لـ 32px (mobile). المسافة = gap الـ stack الأب + `mt` الزراير، لأن `PurchasePanel` بيرجّع fragment |
-| 9 | شيل Delivery T&C على الموبايل | `hidden lg:block`، فاللينك بيظهر على الـ desktop بس |
+| 6 | stroke أرفع لدايرة التقييم | **5% من القطر = Figma بالظبط** (`innerRadius: 0.9`). التنفيذ الأولاني كان 10%، يعني أتخن من Figma بالضعف |
+| 7 | padding أقل في الـ header | اتعمل، وبعدين **اترجّع لقيمة Figma** (31 و24px) |
+| 8 | مسافة أقل بين Size وزرار Add To Cart | **مضبوطة على Figma**: 56px (desktop) و48px (mobile). المسافة = gap الـ stack الأب + `mt` الزراير، لأن `PurchasePanel` بيرجّع fragment |
+| 9 | شيل Delivery T&C على الموبايل | `hidden lg:block`. ده **مطابق لـ Figma**، لأن الـ mobile frame مفيهوش اللينك ده أصلاً |
 
 ### مراجعة الـ Skills
 **Senior Frontend**:
@@ -665,3 +666,59 @@ Figma بيستخدم dash pattern `[6, 6]` بسمك 0.5px. CSS `border-style: da
 - الأرقام السحرية بقت ثوابت ليها أسماء: `ADDED_FEEDBACK_MS` و`QUANTITY_PER_CLICK` و`COLLAPSED_LINES` و`MAX_VISIBLE`.
 - `pluralize()` بدل تكرار "item/items".
 - اتشال الـ dead code: `showQuantity` و`is_quantity_hidden` و`sanitize.ts`.
+
+---
+
+## 18. التحقق من الـ Pixel perfect بالقياس
+
+الشركة طالبة إن الـ UI يبقى **pixel perfect**، فالمقارنة اتعملت **بالأرقام مش بالعين**:
+1. سكريبت Playwright بيفتح الصفحة على **1512px** و**375px**، وهما نفس عرض الـ Figma frames.
+2. بيقيس مكان وحجم كل عنصر أساسي بـ `getBoundingClientRect()`.
+3. بيقارن المسافات بالقيم اللي اتقرت من Figma (auto-layout gaps و padding و sizes)، بسماحية **±1px**.
+
+### النتيجة: كل القياسات مطابقة
+
+| القياس | Figma Desktop | Figma Mobile |
+| --- | --- | --- |
+| Promo bar | 42 | 58 |
+| Promo → الخط المتقطع تحت الـ header | 94 | 75 |
+| Rule → breadcrumb → product | 31 / 31 | 24 / 24 |
+| الصورة الرئيسية | 458×610 | 279×372 |
+| الصورة → الأزرار / الأزرار | 35 / 52 | 12 / 44 |
+| الصورة → الـ thumbnails / عرض الـ thumbnail | 24 / 76 | 20 / 55.2 |
+| Gallery → info | — | 56 |
+| Brand → title → price → divider → description | 12 / 20 / 28 / 28 | 8 / 14 / 28 / 24 |
+| Description → Color → Size | 40 / 40 | 32 / 32 |
+| Label → options | 18 | 18 |
+| Swatch | 75×40 | 73.5×39.3 (Figma 73.7 و72.7 بالتبادل) |
+| Size → Add To Cart | 56 | 48 |
+| Add To Cart | 296×58 (Fill) | 296×56 |
+| Checkout | 200 (Fixed)، gap 24 | gap 18 |
+| CTA → Delivery T&C | 38 | (مش موجود في الـ frame) |
+| Sections | 80 | 56 |
+| Rail title → grid / gap الكروت | 24 / 35 | 40 / 21 (rows 36) |
+| صورة الكارت | 212×284 | 157×210.3 |
+| Reviews title → box / ارتفاع الـ box | 24 / 226 | 16 / 253 |
+| Filter / gap | 278 / 40 | — |
+| Ring / bars | 84 / 8 | 64 / 8 |
+| Tabs / tabs → reviews | 42 / 34 | 32 / 32 |
+| Pagination | 44×44 | 36×36 |
+| Footer: padding / content / الخط المتقطع | 72 / 162 / 306 | 45 |
+
+### الحاجات اللي اتصلحت في الجولة دي (كانت بتفرق عن Figma)
+- **رجوع القيم اللي اتغيرت قبل كده**: padding الـ header (31 و24)، Description → Color (40 و32)، Size → CTA (56 و48).
+- **Rating ring**: 5% من القطر زي `innerRadius: 0.9`.
+- **صف الـ header على الموبايل**: كان 40px بسبب أزرار اللمس، فكل حاجة تحته كانت نازلة 13px. بقى ارتفاعه 27px زي Figma، والأزرار 40px لسه موجودة للمس وبتطلع برّه الصف.
+- **اللوجو** بياخد نفس الـ box بتاع صورة اللوجو في Figma: 170×32 و140×26.
+- **أزرار الـ CTA** بقت بنفس الـ sizing بتاع Figma: Add To Cart **Fill** و Checkout **Fixed 200**. كانت نسبة flex، فالزرار كان 285 بدل 296.
+- **صفوف الـ rating**: ارتفاعها ثابت 26px على الـ desktop و17px على الموبايل، والـ box بقى 226 و253.
+- **الـ Footer**:
+  - الـ `li` بتاع أيقونات السوشيال كان بيزوّد الارتفاع (43 بدل 36).
+  - اللينكات كانت 24px بدل 22.
+  - الـ left frame ارتفاعه ثابت 160 زي Figma.
+  - النتيجة: الـ content بقى 162 والخط المتقطع في 306 بالظبط.
+
+### فروق مقبولة (مش في الـ layout)
+- **المحتوى من الـ API**: اسم المنتج أطول فبيلف سطرين، والوصف والصور مختلفين، فارتفاع الصفحة الكلي بيختلف. **المسافات بين العناصر هي اللي متطابقة.**
+- **زرار الـ like** أعرض 1.5px بسبب عرض الأرقام في الخط.
+- **ارتفاع الـ footer**: 385 بدل 381. الـ 381 ارتفاع ثابت للـ frame في Figma، وهو أصغر من مجموع الـ auto-layout بتاعه (384).
