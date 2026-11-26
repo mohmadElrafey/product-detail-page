@@ -2,6 +2,8 @@
 
 A pixel-accurate, responsive e-commerce product detail page (web **and** mobile designs), backed by the EasyOrders product API, with a persistent cart, variant selection with availability rules, reviews with faceted filters, and full keyboard / screen-reader support.
 
+**Live demo:** https://product-detail-page-rho.vercel.app (deployed on Vercel)
+
 > Design reference: the Figma file in the task README (`Product Details landing page / Web` 1512px and `/ Mobile` 375px frames).
 > A detailed walkthrough of every decision (in Arabic) lives in [`docs/IMPLEMENTATION_GUIDE.md`](docs/IMPLEMENTATION_GUIDE.md).
 
