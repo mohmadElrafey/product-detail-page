@@ -37,6 +37,7 @@ One required variable, with no default in the code. Locally put it in a `.env` f
 | Variable | What it is |
 | --- | --- |
 | `VITE_API_BASE_URL` | Base URL of the products API (e.g. `https://<host>/api/v1`) |
+| `E2E_BASE_URL` | Host the Playwright specs open, without the port (e.g. `http://localhost`); the port (4173) is added in `playwright.config.ts`. Local/CI only, not needed on Vercel |
 
 The non-secret store settings (store slug, product slug, currency, locale) live in [`src/config/store.ts`](src/config/store.ts).
 
