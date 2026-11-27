@@ -93,12 +93,13 @@
 
 ```
 src/
-├── config/            env + constants
-├── lib/               helpers مش معتمدة على React (http, format, htmlToText, cn)
-├── hooks/             hooks عامة (useCountdown, useDismiss)
+├── config/            env + store settings
+├── lib/               helpers مش معتمدة على React (http, format, htmlToText, cn, toast/)
+├── hooks/             hooks عامة (useCountdown, useDismiss, useTextClamp)
 ├── components/
 │   ├── ui/            primitives = design system صغير
 │   └── layout/        Header, Footer, Breadcrumbs…
+├── pages/             ProductPage: بتجمّع الـ features مع الـ layout
 ├── features/          ← القلب
 │   ├── product/
 │   │   ├── api/       dto + mapper + fetch   (حدود الـ API)
@@ -106,7 +107,7 @@ src/
 │   │   ├── hooks/     useProduct, useVariantSelection, useAddToCart
 │   │   └── components/
 │   ├── cart/          store + selectors + drawer
-│   ├── reviews/
+│   ├── reviews/       data/ + model/ + hooks/ + components/
 │   └── recommendations/
 └── test/              setup + fixtures
 ```
@@ -115,8 +116,10 @@ src/
 في الـ type-based (`components/` و`hooks/` و`store/`) الـ feature الواحدة بتتوزّع على 5 فولدرات. في الـ feature-based كل حاجة تخص الـ cart في مكان واحد: تقدر تمسحها أو تنقلها أو تديها لـ team تاني من غير ما تلمس باقي الكود.
 
 ### الـ Dependency rule
-- `lib/` و`components/ui/` **ميعرفوش** أي feature.
-- الـ features بتستخدمهم، مش العكس.
+- الاتجاه: `pages → features → shared layers`، ومفيش حاجة بترجع لورا.
+- `lib/` و`hooks/` و`components/` **ميعرفوش** أي feature، و`lib/` كمان مفيهوش React (حتى الـ toast store معمول بـ `zustand/vanilla`).
+- الـ `Header` بياخد زرار الـ cart وعدد الـ wishlist كـ props من الصفحة، بدل ما يستوردهم من الـ features.
+- `pages/` هي الوحيدة اللي بتجمّع أكتر من feature. الـ features بتستخدم الـ shared layers، مش العكس.
 - `model/` **مفيهاش React خالص**، فكل الـ business rules بتتختبر بـ unit tests من غير render.
 
 ### ليه فصلت `api/` عن `model/`؟

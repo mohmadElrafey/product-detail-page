@@ -1,8 +1,5 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useRef, useState, type ReactNode } from 'react'
 import { useDismiss } from '../../hooks/useDismiss'
-import { CartButton } from '../../features/cart/components/CartButton'
-import { useWishlistStore } from '../../features/cart/store/wishlist.store'
-import type { Category } from '../../features/product/model/product'
 import { DashedRule } from '../ui/Dashed'
 import { CountBadge } from '../ui/CountBadge'
 import { Icon } from '../ui/Icon'
@@ -10,10 +7,28 @@ import { pluralize } from '../../lib/format'
 import { Sheet } from '../ui/Sheet'
 import { Logo } from './Logo'
 
+/** Only what the header renders; a product `Category` satisfies it structurally. */
+interface HeaderCategory {
+  id: string
+  name: string
+  slug: string
+}
+
+/**
+ * Layout only: no feature imports. The page passes in the feature pieces
+ * (the cart button, the wishlist count) so this stays reusable across pages.
+ */
+interface HeaderProps {
+  categories: HeaderCategory[]
+  /** Rendered in both the desktop and the mobile icon rows. */
+  cartButton: ReactNode
+  wishlistCount: number
+}
+
 const headerIconClass =
   'inline-flex size-10 items-center justify-center rounded-full text-ink transition-colors hover:bg-surface lg:size-auto lg:rounded-none lg:hover:bg-transparent lg:hover:text-secondary'
 
-function CategoriesMenu({ categories }: { categories: Category[] }) {
+function CategoriesMenu({ categories }: { categories: HeaderCategory[] }) {
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
@@ -55,8 +70,7 @@ function CategoriesMenu({ categories }: { categories: Category[] }) {
   )
 }
 
-function WishlistLink() {
-  const count = useWishlistStore((state) => state.productIds.length)
+function WishlistLink({ count }: { count: number }) {
   return (
     <a href="/wishlist" className={`relative ${headerIconClass}`} aria-label={`Wishlist, ${pluralize(count, 'item')}`}>
       <Icon name="heart" />
@@ -65,12 +79,11 @@ function WishlistLink() {
   )
 }
 
-function WishlistCount() {
-  const count = useWishlistStore((state) => state.productIds.length)
+function WishlistCount({ count }: { count: number }) {
   return count > 0 ? <span className="ml-auto rounded-full bg-ink px-2 text-xs leading-5 text-white">{count}</span> : null
 }
 
-export function Header({ categories }: { categories: Category[] }) {
+export function Header({ categories, cartButton, wishlistCount }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
@@ -90,8 +103,8 @@ export function Header({ categories }: { categories: Category[] }) {
             Sign in
           </a>
           <div className="flex items-center gap-[42px]">
-            <WishlistLink />
-            <CartButton />
+            <WishlistLink count={wishlistCount} />
+            {cartButton}
           </div>
         </nav>
 
@@ -100,7 +113,7 @@ export function Header({ categories }: { categories: Category[] }) {
           <button type="button" className={headerIconClass} aria-label="Search">
             <Icon name="search" />
           </button>
-          <CartButton />
+          {cartButton}
           <button
             type="button"
             className={headerIconClass}
@@ -122,7 +135,7 @@ export function Header({ categories }: { categories: Category[] }) {
           </a>
           <a href="/wishlist" className="flex items-center gap-2 py-3 text-base font-medium">
             <Icon name="heart" /> Wishlist
-            <WishlistCount />
+            <WishlistCount count={wishlistCount} />
           </a>
           <p className="mt-4 mb-2 text-sm font-semibold text-muted uppercase">Categories</p>
           {categories.map((category) => (

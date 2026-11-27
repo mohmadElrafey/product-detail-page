@@ -1,19 +1,33 @@
 import { lazy, Suspense } from 'react'
-import { AnnouncementBar } from '../../../components/layout/AnnouncementBar'
-import { Breadcrumbs, type Crumb } from '../../../components/layout/Breadcrumbs'
-import { Footer } from '../../../components/layout/Footer'
-import { Header } from '../../../components/layout/Header'
-import { DashedRule } from '../../../components/ui/Dashed'
-import { POPULAR_PRODUCTS, RELATED_PRODUCTS } from '../../recommendations/data/recommendations.fixture'
-import { ProductRail } from '../../recommendations/components/ProductRail'
-import { useProductReviews } from '../../reviews/useProductReviews'
-import { useProduct } from '../hooks/useProduct'
-import type { Product } from '../model/product'
-import { ProductDetails } from './ProductDetails'
-import { ProductError, ProductSkeleton } from './ProductStates'
+import { AnnouncementBar } from '../components/layout/AnnouncementBar'
+import { Breadcrumbs, type Crumb } from '../components/layout/Breadcrumbs'
+import { Footer } from '../components/layout/Footer'
+import { Header } from '../components/layout/Header'
+import { DashedRule } from '../components/ui/Dashed'
+import { CartButton } from '../features/cart/components/CartButton'
+import { useWishlistStore } from '../features/cart/store/wishlist.store'
+import { ProductDetails } from '../features/product/components/ProductDetails'
+import { ProductError, ProductSkeleton } from '../features/product/components/ProductStates'
+import { useProduct } from '../features/product/hooks/useProduct'
+import type { Category, Product } from '../features/product/model/product'
+import { ProductRail } from '../features/recommendations/components/ProductRail'
+import { POPULAR_PRODUCTS, RELATED_PRODUCTS } from '../features/recommendations/data/recommendations.fixture'
+import { useProductReviews } from '../features/reviews/hooks/useProductReviews'
+
+/*
+ * Page layer: the only place that composes several features (product, cart,
+ * reviews, recommendations) with the shared layout. Features never import pages.
+ */
 
 // Below-the-fold and interaction-only code is split into its own chunk.
-const ProductReviews = lazy(() => import('../../reviews/components/ProductReviews'))
+const ProductReviews = lazy(() => import('../features/reviews/components/ProductReviews'))
+
+/** Wires the cart and wishlist features into the feature-free layout Header. */
+function SiteHeader({ categories }: { categories: Category[] }) {
+  // Subscribed here (not in ProductPage) so a wishlist change re-renders only the header.
+  const wishlistCount = useWishlistStore((state) => state.productIds.length)
+  return <Header categories={categories} cartButton={<CartButton />} wishlistCount={wishlistCount} />
+}
 
 function buildCrumbs(product: Product | undefined): Crumb[] {
   const category = product?.categories[0]
@@ -59,7 +73,7 @@ export function ProductPage({ slug }: { slug: string }) {
         Skip to content
       </a>
       <AnnouncementBar />
-      <Header categories={product?.categories ?? []} />
+      <SiteHeader categories={product?.categories ?? []} />
       <Breadcrumbs items={buildCrumbs(product)} />
 
       <main id="main" className="flex flex-col gap-14 pt-6 lg:gap-20 lg:pt-[31px]">

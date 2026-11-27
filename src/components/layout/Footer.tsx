@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { DashedRule } from '../ui/Dashed'
 import { Icon, type IconName } from '../ui/Icon'
-import { toast } from '../ui/toast.store'
+import { toast } from '../../lib/toast/toast.store'
 import { Logo } from './Logo'
 
 const COLUMNS = [

@@ -51,26 +51,32 @@ The non-secret store settings (store slug, product slug, currency, locale) live 
 
 ```
 src/
-├── config/env.ts              runtime config (Vite env with defaults)
-├── lib/                       framework-free helpers: http, format, htmlToText, cn
-├── hooks/                     generic hooks (useCountdown, useDismiss)
+├── config/                    env.ts (VITE_API_BASE_URL, required) + store.ts (store settings)
+├── lib/                       framework-free helpers: http, format, htmlToText, cn,
+│                              toast/ (toast queue on zustand/vanilla + toast())
+├── hooks/                     generic hooks (useCountdown, useDismiss, useTextClamp)
 ├── components/
 │   ├── ui/                    design-system primitives (Button, IconButton, Icon, Sheet,
 │   │                          QuantityStepper, CountBadge, StarRating, Dashed*, Toaster, Skeleton)
 │   └── layout/                AnnouncementBar, Header, Breadcrumbs, Footer, Logo
+├── pages/                     ProductPage: composes the features with the layout
 ├── features/                  feature-first ("vertical slices")
 │   ├── product/
 │   │   ├── api/               DTO types → mapper → fetch function   (API boundary)
 │   │   ├── model/             domain types + pure variant rules      (no React)
 │   │   ├── hooks/             useProduct (React Query), useVariantSelection, useAddToCart
-│   │   └── components/        ProductPage, gallery/, ProductInfo, VariationSelector, PurchasePanel…
+│   │   └── components/        ProductDetails, gallery/, ProductInfo, VariationSelector, PurchasePanel…
 │   ├── cart/                  Zustand + Immer + persist store, selectors, drawer UI, wishlist
-│   ├── reviews/               fixture, pure filter/summary/pagination model, UI
+│   ├── reviews/               fixture, pure filter/summary/pagination model, hooks/useProductReviews, UI
 │   └── recommendations/       fixture + ProductRail / ProductCard
 └── test/                      setup, captured API fixture, factories
 ```
 
-**Dependency rule:** `components/ui` and `lib` know nothing about features; features may use them; `model/` files are plain TypeScript so all business rules are unit-testable without rendering.
+**Dependency rule:** `pages → features → shared layers` (`components`, `hooks`, `lib`, `config`), never the other way.
+- `lib/` has no React and no features; `hooks/` and `components/` know nothing about features.
+- The layout `Header` receives feature pieces (cart button, wishlist count) as props from the page.
+- Only `pages/` composes several features. The one cross-feature import is `product → cart` (adding to the cart).
+- `model/` files are plain TypeScript so all business rules are unit-testable without rendering.
 
 ### Data flow
 

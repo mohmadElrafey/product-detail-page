@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
-import { REVIEWS_FIXTURE } from './data/reviews.fixture'
-import { summarize, type Review } from './model/reviews'
+import { REVIEWS_FIXTURE } from '../data/reviews.fixture'
+import { summarize, type Review } from '../model/reviews'
 
 /**
  * Single entry point for review data. Today: fixture (the API returns none).

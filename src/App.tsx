@@ -3,7 +3,7 @@ import { Toaster } from './components/ui/Toaster'
 import { env } from './config/env'
 import { selectIsOpen } from './features/cart/store/cart.selectors'
 import { syncCartAcrossTabs, useCartStore } from './features/cart/store/cart.store'
-import { ProductPage } from './features/product/components/ProductPage'
+import { ProductPage } from './pages/ProductPage'
 
 const CartDrawer = lazy(() => import('./features/cart/components/CartDrawer'))
 

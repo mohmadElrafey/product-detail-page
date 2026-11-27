@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react'
-import { toast } from '../../../components/ui/toast.store'
+import { toast } from '../../../lib/toast/toast.store'
 import { selectQuantityInCart } from '../../cart/store/cart.selectors'
 import { useCartStore } from '../../cart/store/cart.store'
 import { toLineId, type AddToCartInput } from '../../cart/store/cart.types'

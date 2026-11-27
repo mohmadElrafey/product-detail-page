@@ -1,13 +1,15 @@
-import { useToastStore } from './toast.store'
+import { useStore } from 'zustand'
+import { toastStore } from '../../lib/toast/toast.store'
 import { Icon } from './Icon'
 
 /**
  * Renders queued toasts inside a polite live region, so screen readers announce
  * "Added to cart" without moving focus away from the button the user pressed.
+ * The queue itself lives in `lib/toast` (no React); this is only its view.
  */
 export function Toaster() {
-  const toasts = useToastStore((state) => state.toasts)
-  const dismiss = useToastStore((state) => state.dismiss)
+  const toasts = useStore(toastStore, (state) => state.toasts)
+  const dismiss = useStore(toastStore, (state) => state.dismiss)
 
   return (
     <div

@@ -1,4 +1,4 @@
-import { create } from 'zustand'
+import { createStore } from 'zustand/vanilla'
 
 export interface Toast {
   id: number
@@ -6,7 +6,7 @@ export interface Toast {
   action?: { label: string; onClick: () => void }
 }
 
-interface ToastStore {
+export interface ToastState {
   toasts: Toast[]
   show: (toast: Omit<Toast, 'id'>, durationMs?: number) => void
   dismiss: (id: number) => void
@@ -14,7 +14,11 @@ interface ToastStore {
 
 let nextId = 1
 
-export const useToastStore = create<ToastStore>()((set, get) => ({
+/**
+ * Framework-free toast queue (`zustand/vanilla`, no React), so any layer can raise
+ * a toast without depending on a feature. React subscribes in `components/ui/Toaster`.
+ */
+export const toastStore = createStore<ToastState>()((set, get) => ({
   toasts: [],
   show: (toast, durationMs = 3500) => {
     const id = nextId++
@@ -26,5 +30,4 @@ export const useToastStore = create<ToastStore>()((set, get) => ({
 }))
 
 /** Imperative helper usable outside React components (e.g. inside event handlers). */
-export const toast = (message: string, action?: Toast['action']) =>
-  useToastStore.getState().show({ message, action })
+export const toast = (message: string, action?: Toast['action']) => toastStore.getState().show({ message, action })

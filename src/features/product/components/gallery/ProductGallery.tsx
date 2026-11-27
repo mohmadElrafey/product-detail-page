@@ -1,7 +1,7 @@
 import { useState, type KeyboardEvent } from 'react'
 import { Icon } from '../../../../components/ui/Icon'
 import { IconButton } from '../../../../components/ui/IconButton'
-import { toast } from '../../../../components/ui/toast.store'
+import { toast } from '../../../../lib/toast/toast.store'
 import { cn } from '../../../../lib/cn'
 import { useWishlistStore } from '../../../cart/store/wishlist.store'
 import type { Product } from '../../model/product'
