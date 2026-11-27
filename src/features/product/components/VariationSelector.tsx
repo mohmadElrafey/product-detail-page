@@ -63,7 +63,7 @@ export function VariationSelector({ variation, value, isAvailable, onSelect, err
   }
 
   return (
-    <div ref={ref} className="flex flex-col gap-[18px]">
+    <div ref={ref} className="relative flex flex-col gap-[18px]">
       <div className="flex items-center justify-between gap-4">
         <p id={labelId} className="text-lg leading-[1.2] font-medium text-muted lg:text-xl">
           {variation.label}:{' '}
@@ -102,8 +102,9 @@ export function VariationSelector({ variation, value, isAvailable, onSelect, err
         ))}
       </div>
 
+      {/* Absolute: sits in the existing gap below the options, so showing it never shifts the layout. */}
       {error && (
-        <p id={errorId} role="alert" className="-mt-2 text-sm font-medium text-danger">
+        <p id={errorId} role="alert" className="absolute top-full left-0 mt-1.5 text-sm leading-[1.2] font-medium text-danger">
           {error}
         </p>
       )}
