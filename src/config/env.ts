@@ -20,4 +20,4 @@ export const env = {
 } as const
 
 /** Upper bound per cart line when the API does not track stock. */
-export const MAX_QUANTITY_PER_LINE = 0
+export const MAX_QUANTITY_PER_LINE = 10
