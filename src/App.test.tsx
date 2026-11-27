@@ -42,11 +42,15 @@ describe('Product page — cart integration', () => {
     expect(await screen.findByText('Please select a size')).toBeInTheDocument()
     expect(useCartStore.getState().items).toHaveLength(0)
 
-    // 2) Choose a size, add twice → same line merges to quantity 2, badge shows 2.
+    // 2) Choose a size and add → the button becomes a stepper; + adds one more to the same line.
     await user.click(screen.getByRole('radio', { name: '40' }))
     await user.click(screen.getByRole('button', { name: 'Add To Cart' }))
-    await user.click(screen.getByRole('button', { name: /Add To Cart|Added/ }))
+    expect(screen.queryByRole('button', { name: 'Add To Cart' })).not.toBeInTheDocument()
+    const stepper = screen.getByRole('group', { name: /in cart/ })
+    expect(within(stepper).getByRole('spinbutton')).toHaveValue(1)
+    await user.click(within(stepper).getByRole('button', { name: 'Increase quantity' }))
 
+    expect(within(stepper).getByRole('spinbutton')).toHaveValue(2)
     expect(cartButton()).toHaveAccessibleName('Open cart, 2 items')
     expect(useCartStore.getState().items[0]).toMatchObject({
       quantity: 2,
@@ -56,7 +60,14 @@ describe('Product page — cart integration', () => {
         { label: 'Size', value: '40' },
       ],
     })
-    expect(await screen.findAllByText(/added to cart/i)).toHaveLength(2)
+    // Only the first add toasts; + on the stepper just updates the badge.
+    expect(await screen.findAllByText(/added to cart/i)).toHaveLength(1)
+
+    // 3) − down to 0 removes the line and brings the Add To Cart button back.
+    await user.click(within(stepper).getByRole('button', { name: 'Decrease quantity' }))
+    await user.click(within(stepper).getByRole('button', { name: 'Decrease quantity' }))
+    expect(useCartStore.getState().items).toHaveLength(0)
+    expect(screen.getByRole('button', { name: 'Add To Cart' })).toBeInTheDocument()
   })
 
   it('manages items in the drawer down to the empty state', async () => {

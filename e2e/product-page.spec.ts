@@ -26,7 +26,11 @@ test('select variation → add to cart → manage cart → persists across reloa
   await page.getByRole('radio', { name: 'Black' }).click()
   await page.getByRole('radio', { name: '40' }).click()
   await addToCart.click()
-  await page.getByRole('button', { name: /Add To Cart|Added/ }).first().click()
+  // The button turns into a − 1 + stepper; + adds another unit of the same variant.
+  const stepper = page.getByRole('group', { name: /in cart/ }).first()
+  await expect(stepper.getByRole('spinbutton')).toHaveValue('1')
+  await stepper.getByRole('button', { name: 'Increase quantity' }).click()
+  await expect(stepper.getByRole('spinbutton')).toHaveValue('2')
 
   const cartButton = page.getByRole('button', { name: /Open cart/ }).filter({ visible: true })
   await expect(cartButton).toHaveAccessibleName('Open cart, 2 items')

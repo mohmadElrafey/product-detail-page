@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { Button } from '../../../components/ui/Button'
-import { Icon } from '../../../components/ui/Icon'
+import { QuantityStepper } from '../../../components/ui/QuantityStepper'
 import { useAddToCart } from '../hooks/useAddToCart'
 import type { VariantSelectionState } from '../hooks/useVariantSelection'
 import type { Product, Variation } from '../model/product'
@@ -28,13 +28,26 @@ const asideFor = (variation: Variation) => (variation.kind === 'text' ? sizeChar
  * Variations → CTAs (Figma): 40px between groups (32 mobile), 24px between buttons.
  * Desktop buttons follow Figma sizing: Add To Cart = Fill, Checkout Now = Fixed 200px.
  * Size → buttons is 56px (48 mobile) = the parent stack's gap (40/32) + this mt (16).
- * Quantity is chosen in the cart drawer (each click adds one unit).
+ * Add To Cart adds one unit; once the selected variant is in the cart the button
+ * becomes a − n + stepper bound to that cart line (− at 1 removes it and brings the button back).
  */
 export function PurchasePanel({ product, selection }: PurchasePanelProps) {
   const ctaRef = useRef<HTMLDivElement>(null)
-  const { add, justAdded, errorFor, registerGroup } = useAddToCart(product, selection)
+  const { add, quantityInCart, changeQuantity, errorFor, registerGroup } = useAddToCart(product, selection)
   const outOfStock = selection.stock.status === 'out_of_stock'
   const hasMissing = selection.missing.length > 0
+
+  const inCartStepper =
+    quantityInCart > 0 ? (
+      <QuantityStepper
+        size="lg"
+        label={`Quantity of ${product.name} in cart`}
+        value={quantityInCart}
+        max={selection.maxQuantity}
+        allowRemove
+        onChange={changeQuantity}
+      />
+    ) : null
 
   return (
     <>
@@ -54,22 +67,16 @@ export function PurchasePanel({ product, selection }: PurchasePanelProps) {
       </div>
 
       <div ref={ctaRef} className="mt-4 flex flex-col items-start gap-[18px] lg:flex-row lg:gap-6">
-        <Button
-          className="w-[296px] max-w-full lg:w-auto lg:flex-1"
-          disabled={outOfStock}
-          onClick={() => add()}
-          aria-describedby={hasMissing ? 'cta-hint' : undefined}
-        >
-          {outOfStock ? (
-            'Out of stock'
-          ) : justAdded ? (
-            <>
-              <Icon name="check" /> Added
-            </>
-          ) : (
-            'Add To Cart'
-          )}
-        </Button>
+        {inCartStepper ?? (
+          <Button
+            className="w-[296px] max-w-full lg:w-auto lg:flex-1"
+            disabled={outOfStock}
+            onClick={() => add()}
+            aria-describedby={hasMissing ? 'cta-hint' : undefined}
+          >
+            {outOfStock ? 'Out of stock' : 'Add To Cart'}
+          </Button>
+        )}
         <Button
           variant="outline"
           className="w-[187px] max-w-full lg:w-[200px] lg:shrink-0"
@@ -94,7 +101,13 @@ export function PurchasePanel({ product, selection }: PurchasePanelProps) {
       ) : null}
 
       {product.stickyBuyBar ? (
-        <StickyBuyBar targetRef={ctaRef} price={selection.price} disabled={outOfStock} onAdd={() => add()} />
+        <StickyBuyBar
+          targetRef={ctaRef}
+          price={selection.price}
+          disabled={outOfStock}
+          onAdd={() => add()}
+          inCartStepper={inCartStepper}
+        />
       ) : null}
     </>
   )

@@ -1,4 +1,4 @@
-import { useEffect, useState, type RefObject } from 'react'
+import { useEffect, useState, type ReactNode, type RefObject } from 'react'
 import { formatPrice } from '../../../lib/format'
 import type { Money } from '../model/product'
 
@@ -8,6 +8,8 @@ interface StickyBuyBarProps {
   price: Money
   disabled: boolean
   onAdd: () => void
+  /** Shown instead of the button once the selected variant is already in the cart. */
+  inCartStepper?: ReactNode
 }
 
 /**
@@ -15,7 +17,7 @@ interface StickyBuyBarProps {
  * IntersectionObserver (no scroll listeners) tells us when the main CTA leaves
  * the viewport; the bar is `lg:hidden` so desktop never renders it visibly.
  */
-export function StickyBuyBar({ targetRef, price, disabled, onAdd }: StickyBuyBarProps) {
+export function StickyBuyBar({ targetRef, price, disabled, onAdd, inCartStepper }: StickyBuyBarProps) {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -40,14 +42,16 @@ export function StickyBuyBar({ targetRef, price, disabled, onAdd }: StickyBuyBar
           )}
           <p className="text-lg leading-none font-semibold">{formatPrice(price.current)}</p>
         </div>
-        <button
-          type="button"
-          onClick={onAdd}
-          disabled={disabled}
-          className="h-12 rounded-md bg-ink px-8 text-base font-semibold text-white disabled:bg-muted"
-        >
-          Add To Cart
-        </button>
+        {inCartStepper ?? (
+          <button
+            type="button"
+            onClick={onAdd}
+            disabled={disabled}
+            className="h-12 rounded-md bg-ink px-8 text-base font-semibold text-white disabled:bg-muted"
+          >
+            Add To Cart
+          </button>
+        )}
       </div>
     </div>
   )

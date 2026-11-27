@@ -1,13 +1,14 @@
 import { useCallback, useRef, useState } from 'react'
 import { toast } from '../../../components/ui/toast.store'
+import { selectQuantityInCart } from '../../cart/store/cart.selectors'
 import { useCartStore } from '../../cart/store/cart.store'
-import type { AddToCartInput } from '../../cart/store/cart.types'
+import { toLineId, type AddToCartInput } from '../../cart/store/cart.types'
 import type { Product, Variation } from '../model/product'
 import { describeSelection, getImageIndexForSelection } from '../model/variants'
 import type { VariantSelectionState } from './useVariantSelection'
 
-const ADDED_FEEDBACK_MS = 1800
 const QUANTITY_PER_CLICK = 1
+const selectNothingInCart = () => 0
 
 /** Immutable snapshot of what the shopper sees, written to the cart line. */
 function toCartInput(product: Product, state: VariantSelectionState): AddToCartInput {
@@ -51,30 +52,22 @@ function useGroupRefs() {
   return { registerGroup, getGroup }
 }
 
-/** Short-lived "✓ Added" state on the button. */
-function useAddedFeedback() {
-  const [justAdded, setJustAdded] = useState(false)
-  const timer = useRef<number | undefined>(undefined)
-
-  const flash = useCallback(() => {
-    setJustAdded(true)
-    window.clearTimeout(timer.current)
-    timer.current = window.setTimeout(() => setJustAdded(false), ADDED_FEEDBACK_MS)
-  }, [])
-
-  return { justAdded, flash }
-}
-
 /**
  * Orchestrates "Add to cart": validate → snapshot → store → feedback.
  * The main CTA and the sticky mobile bar share this single code path.
+ * Once the selected variant is in the cart, `quantityInCart` > 0 and the CTA
+ * becomes a stepper: + adds one more unit, − removes one (down to removing the line).
  */
 export function useAddToCart(product: Product, state: VariantSelectionState) {
   const addItem = useCartStore((store) => store.addItem)
   const openCart = useCartStore((store) => store.open)
+  const setQuantity = useCartStore((store) => store.setQuantity)
   const [showErrors, setShowErrors] = useState(false)
   const { registerGroup, getGroup } = useGroupRefs()
-  const { justAdded, flash } = useAddedFeedback()
+
+  // The cart line the current selection maps to (none until every variation is chosen).
+  const lineId = state.missing.length === 0 ? toLineId(product.id, state.variant?.id ?? null) : null
+  const quantityInCart = useCartStore(lineId ? selectQuantityInCart(lineId) : selectNothingInCart)
 
   const errorFor = (variation: Variation) =>
     showErrors && state.missing.some((missing) => missing.name === variation.name)
@@ -82,7 +75,7 @@ export function useAddToCart(product: Product, state: VariantSelectionState) {
       : undefined
 
   const add = useCallback(
-    ({ openDrawer = false } = {}) => {
+    ({ openDrawer = false, quantity = QUANTITY_PER_CLICK, silent = false } = {}) => {
       const firstMissing = state.missing[0]
       if (firstMissing) {
         setShowErrors(true)
@@ -91,21 +84,30 @@ export function useAddToCart(product: Product, state: VariantSelectionState) {
       }
       if (state.stock.status === 'out_of_stock') return false
 
-      const { added, clamped } = addItem(toCartInput(product, state), QUANTITY_PER_CLICK)
+      const { clamped } = addItem(toCartInput(product, state), quantity)
       setShowErrors(false)
-      if (added > 0) flash()
 
       const limitMessage = `Only ${state.maxQuantity} per order — your cart has the maximum.`
       if (openDrawer) {
         // Toasts sit under the modal's backdrop, so the drawer shows the message itself.
         openCart(clamped ? limitMessage : undefined)
-      } else {
+      } else if (clamped || !silent) {
         toast(clamped ? limitMessage : `${product.name} added to cart`, { label: 'View cart', onClick: () => openCart() })
       }
       return true
     },
-    [addItem, openCart, product, state, getGroup, flash],
+    [addItem, openCart, product, state, getGroup],
   )
 
-  return { add, justAdded, errorFor, registerGroup }
+  /** The on-page stepper: going up adds units (same path as the CTA, no toast), going down removes them. */
+  const changeQuantity = useCallback(
+    (next: number) => {
+      if (!lineId) return
+      if (next > quantityInCart) add({ quantity: next - quantityInCart, silent: true })
+      else setQuantity(lineId, next)
+    },
+    [add, lineId, quantityInCart, setQuantity],
+  )
+
+  return { add, quantityInCart, changeQuantity, errorFor, registerGroup }
 }
