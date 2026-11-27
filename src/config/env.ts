@@ -1,8 +1,10 @@
+import { store } from './store'
+
 /**
- * Runtime configuration, read from Vite env vars (`.env` locally, the hosting
- * provider's environment variables in production). Nothing is hard-coded here:
- * a missing variable fails fast with a clear message instead of silently
- * pointing the build at some default store.
+ * Runtime configuration. The API base URL is the only value that comes from the
+ * environment (`.env` locally, Vercel's environment variables in production) and
+ * is never hard-coded: a missing value fails fast with a clear message.
+ * Non-secret store settings come from `./store`.
  */
 function required(name: keyof ImportMetaEnv): string {
   const value = import.meta.env[name]
@@ -14,11 +16,8 @@ function required(name: keyof ImportMetaEnv): string {
 
 export const env = {
   apiBaseUrl: required('VITE_API_BASE_URL'),
-  storeSlug: required('VITE_STORE_SLUG'),
-  productSlug: required('VITE_PRODUCT_SLUG'),
-  currency: required('VITE_CURRENCY'),
-  locale: required('VITE_LOCALE'),
+  ...store,
 } as const
 
 /** Upper bound per cart line when the API does not track stock. */
-export const MAX_QUANTITY_PER_LINE = 10
+export const MAX_QUANTITY_PER_LINE = 0

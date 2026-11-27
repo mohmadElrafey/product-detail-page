@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 import { defineConfig, loadEnv, type Plugin } from 'vite'
 
 /** Variables the app cannot run without (see `src/config/env.ts`). */
-const REQUIRED_ENV = ['VITE_API_BASE_URL', 'VITE_STORE_SLUG', 'VITE_PRODUCT_SLUG', 'VITE_CURRENCY', 'VITE_LOCALE'] as const
+const REQUIRED_ENV = ['VITE_API_BASE_URL'] as const
 
 /**
  * Content-Security-Policy for the production build only (the dev server needs

@@ -1,10 +1,11 @@
 import { expect, test } from '@playwright/test'
+import { store } from '../src/config/store.ts'
 import product from '../src/test/fixtures/product.json' with { type: 'json' }
 
-/** Same formatting as `formatPrice` in the app, driven by the env loaded in playwright.config.ts. */
-const wholePrice = new Intl.NumberFormat(process.env.VITE_LOCALE, {
+/** Same formatting as `formatPrice` in the app, from the same store settings. */
+const wholePrice = new Intl.NumberFormat(store.locale, {
   style: 'currency',
-  currency: process.env.VITE_CURRENCY,
+  currency: store.currency,
   maximumFractionDigits: 0,
 })
 const price = (value: number) => wholePrice.format(value).replace(/\s/g, ' ')

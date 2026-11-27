@@ -32,15 +32,13 @@ E2E uses the locally installed Google Chrome (`channel: 'chrome'`). Without Chro
 
 ### Environment
 
-All required — there are no defaults in the code. Locally put them in a `.env` file at the project root (git-ignored); in production set them in the hosting provider (Vercel → Project → Settings → Environment Variables). The build fails with a clear message if one is missing. Ask the team for the values.
+One required variable, with no default in the code. Locally put it in a `.env` file at the project root (git-ignored); in production it is set in Vercel (Project → Settings → Environment Variables). The build fails with a clear message if it is missing. Get the value from the team or with `npx vercel env pull .env`.
 
 | Variable | What it is |
 | --- | --- |
 | `VITE_API_BASE_URL` | Base URL of the products API (e.g. `https://<host>/api/v1`) |
-| `VITE_STORE_SLUG` | Store identifier in the API |
-| `VITE_PRODUCT_SLUG` | Product shown on the page |
-| `VITE_CURRENCY` | ISO 4217 currency code used for prices |
-| `VITE_LOCALE` | BCP 47 locale for number/date formatting |
+
+The non-secret store settings (store slug, product slug, currency, locale) live in [`src/config/store.ts`](src/config/store.ts).
 
 ### Deployment
 

@@ -1,8 +1,4 @@
-import { existsSync } from 'node:fs'
 import { defineConfig, devices } from '@playwright/test'
-
-// The specs format expected prices with the same VITE_* variables the build uses.
-if (existsSync('.env')) process.loadEnvFile('.env')
 
 const PORT = 4173
 

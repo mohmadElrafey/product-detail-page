@@ -127,7 +127,7 @@ src/
 ## 4. طبقة الداتا
 
 ### الـ Endpoint
-`GET {VITE_API_BASE_URL}/products/slug/{VITE_STORE_SLUG}/{VITE_PRODUCT_SLUG}?join=reviews`
+`GET {VITE_API_BASE_URL}/products/slug/clear-theme/Sneakers12?join=reviews`
 
 ### ملاحظات على الـ response الحقيقي (اتحلّل قبل الكتابة)
 - `price: 190, sale_price: 160` على مستوى المنتج.
@@ -313,7 +313,7 @@ if (preferredIndex !== lastPreferred) {
 - **السعر بيتغير مع الـ variant** لأن `selection.price` derived من الـ variant المختار.
 - **التقييم في الـ header = متوسط الـ reviews الحقيقي** المعروضة تحت. أول تنفيذ كان رقم منفصل، واتغيّر عشان الأرقام تبقى consistent.
 - الرقمين عاملين لينك لـ `#reviews`.
-- **عملة الأسعار**: `Intl.NumberFormat`، والأرقام الصحيحة من غير `.00` (`<currency> 160`). ده كمان خلّى صف السعر يفضل سطر واحد على 375px.
+- **عملة الأسعار**: `Intl.NumberFormat`، والأرقام الصحيحة من غير `.00` (`EGP 160`). ده كمان خلّى صف السعر يفضل سطر واحد على 375px.
 
 ### 7.6 Description
 - **نص عادي مش bullet points** (بطلب العميل وزي الديزاين). `lib/htmlToText.ts` بيحوّل الـ HTML لفقرة واحدة:
@@ -532,7 +532,7 @@ Figma بيستخدم dash pattern `[6, 6]` بسمك 0.5px. CSS `border-style: da
 | --- | --- | --- |
 | لوجو John Lewis ومنتجات John Lewis | Wordmark "ACHILLES & SHOES" بنفس المقاس والـ tracking، وداتا المتجر الحقيقية | **مينفعش نستخدم براند شركة حقيقية**، والـ API أصلاً بتاع متجر أحذية |
 | مفيش Quantity | مفيش Quantity في الصفحة، والكمية بتتعدل في الـ cart drawer. والـ stock بيظهر بس لو قليل أو خلصان | بطلب العميل عشان الصفحة تطابق الديزاين، ومتطلب الـ README لسه متحقق في الـ drawer |
-| الأسعار بـ £ و $ | العملة من `VITE_CURRENCY` | العملة بتتحدد من الـ env |
+| الأسعار بـ £ و $ | `EGP` من `src/config/store.ts` | المتجر في مصر، والعملة بتتغير من ملف الإعدادات |
 | Swatches ألوان صافية | Swatches بصورة كل لون | الـ API بيدي `type: "image"` لكل لون، يعني ده الـ intent |
 | 6 مقاسات | 3 مقاسات | دي الداتا الحقيقية، والـ component بيدعم أي عدد |
 | Reviews بأرقام 2823 و 1.25k | أرقام محسوبة من الـ fixture | الأرقام في الديزاين placeholder، والمحسوب أصدق |
