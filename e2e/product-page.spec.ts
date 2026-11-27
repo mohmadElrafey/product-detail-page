@@ -1,6 +1,14 @@
 import { expect, test } from '@playwright/test'
 import product from '../src/test/fixtures/product.json' with { type: 'json' }
 
+/** Same formatting as `formatPrice` in the app, driven by the env loaded in playwright.config.ts. */
+const wholePrice = new Intl.NumberFormat(process.env.VITE_LOCALE, {
+  style: 'currency',
+  currency: process.env.VITE_CURRENCY,
+  maximumFractionDigits: 0,
+})
+const price = (value: number) => wholePrice.format(value).replace(/\s/g, ' ')
+
 // Deterministic E2E: the product API is answered from the captured fixture.
 test.beforeEach(async ({ page }) => {
   await page.route('**/api/v1/products/slug/**', (route) => route.fulfill({ json: product }))
@@ -27,10 +35,10 @@ test('select variation → add to cart → manage cart → persists across reloa
   const drawer = page.getByRole('dialog', { name: /Your cart/ })
   await expect(drawer).toBeVisible()
   await expect(drawer.getByText('Color: Black · Size: 40')).toBeVisible()
-  await expect(drawer.getByTestId('cart-subtotal')).toHaveText('EGP 320')
+  await expect(drawer.getByTestId('cart-subtotal')).toHaveText(price(320))
 
   await drawer.getByRole('button', { name: 'Decrease quantity' }).click()
-  await expect(drawer.getByTestId('cart-subtotal')).toHaveText('EGP 160')
+  await expect(drawer.getByTestId('cart-subtotal')).toHaveText(price(160))
 
   await page.keyboard.press('Escape')
   await expect(drawer).toBeHidden()

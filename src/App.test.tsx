@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
 import { useCartStore } from './features/cart/store/cart.store'
+import { formatPrice } from './lib/format'
 import { productDto } from './test/fixtures'
 
 function renderApp() {
@@ -14,6 +15,9 @@ function renderApp() {
     </QueryClientProvider>,
   )
 }
+
+/** Intl output uses non-breaking spaces; jest-dom compares against whitespace-normalised text. */
+const price = (value: number) => formatPrice(value).replace(/\s/g, ' ')
 
 const cartButton = () => screen.getAllByRole('button', { name: /open cart/i })[0]!
 
@@ -31,7 +35,7 @@ describe('Product page — cart integration', () => {
     renderApp()
 
     expect(await screen.findByRole('heading', { level: 1, name: productDto.name })).toBeInTheDocument()
-    expect(screen.getByTestId('product-price')).toHaveTextContent('EGP 160')
+    expect(screen.getByTestId('product-price')).toHaveTextContent(price(160))
 
     // 1) No size yet → validation error, nothing added.
     await user.click(screen.getByRole('button', { name: 'Add To Cart' }))
@@ -64,10 +68,10 @@ describe('Product page — cart integration', () => {
     await user.click(screen.getByRole('button', { name: 'Checkout Now' })) // adds + opens drawer
 
     const drawer = await screen.findByRole('dialog', { name: /your cart/i })
-    expect(within(drawer).getByTestId('cart-subtotal')).toHaveTextContent('EGP 160')
+    expect(within(drawer).getByTestId('cart-subtotal')).toHaveTextContent(price(160))
 
     await user.click(within(drawer).getByRole('button', { name: 'Increase quantity' }))
-    expect(within(drawer).getByTestId('cart-subtotal')).toHaveTextContent('EGP 320')
+    expect(within(drawer).getByTestId('cart-subtotal')).toHaveTextContent(price(320))
 
     await user.click(within(drawer).getByRole('button', { name: /remove .* from cart/i }))
     expect(within(drawer).getByText('Your cart is empty')).toBeInTheDocument()

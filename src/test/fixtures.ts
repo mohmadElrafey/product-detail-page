@@ -3,7 +3,7 @@ import type { ProductDto } from '../features/product/api/product.dto'
 import type { Product } from '../features/product/model/product'
 import raw from './fixtures/product.json'
 
-/** Real response captured from the EasyOrders endpoint (Sneakers12). */
+/** Real response captured from the product endpoint. */
 export const productDto = raw as unknown as ProductDto
 
 export const makeProduct = (overrides: Partial<ProductDto> = {}): Product =>

@@ -27,3 +27,6 @@ dist-ssr
 test-results/
 playwright-report/
 .vercel
+
+# Local environment (values live in Vercel for production)
+/.env

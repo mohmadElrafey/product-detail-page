@@ -8,8 +8,8 @@
     <meta name="description" content="Product detail page — gallery, variations, reviews and a persistent cart." />
     <title>Product details</title>
 
-    <!-- Warm up the connections the first paint depends on (API, image CDN, fonts). -->
-    <link rel="preconnect" href="https://api.easy-orders.net" crossorigin />
+    <!-- Warm up the connections the first paint depends on (image CDN, fonts).
+         The API preconnect is injected at build time from VITE_API_BASE_URL (vite.config.ts). -->
     <link rel="preconnect" href="https://easyorders.fra1.digitaloceanspaces.com" />
     <link rel="preconnect" href="https://api.fontshare.com" />
     <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />

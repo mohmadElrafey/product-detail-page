@@ -1,13 +1,23 @@
 /**
- * Runtime configuration. Everything is overridable through Vite env vars
- * (see `.env.example`) so the same build can point at another store/product.
+ * Runtime configuration, read from Vite env vars (`.env` locally, the hosting
+ * provider's environment variables in production). Nothing is hard-coded here:
+ * a missing variable fails fast with a clear message instead of silently
+ * pointing the build at some default store.
  */
+function required(name: keyof ImportMetaEnv): string {
+  const value = import.meta.env[name]
+  if (typeof value !== 'string' || value.trim() === '') {
+    throw new Error(`Missing environment variable ${name}. Add it to .env (or to the hosting provider's settings).`)
+  }
+  return value.trim()
+}
+
 export const env = {
-  apiBaseUrl: import.meta.env.VITE_API_BASE_URL ?? 'https://api.easy-orders.net/api/v1',
-  storeSlug: import.meta.env.VITE_STORE_SLUG ?? 'clear-theme',
-  productSlug: import.meta.env.VITE_PRODUCT_SLUG ?? 'Sneakers12',
-  currency: import.meta.env.VITE_CURRENCY ?? 'EGP',
-  locale: import.meta.env.VITE_LOCALE ?? 'en-US',
+  apiBaseUrl: required('VITE_API_BASE_URL'),
+  storeSlug: required('VITE_STORE_SLUG'),
+  productSlug: required('VITE_PRODUCT_SLUG'),
+  currency: required('VITE_CURRENCY'),
+  locale: required('VITE_LOCALE'),
 } as const
 
 /** Upper bound per cart line when the API does not track stock. */

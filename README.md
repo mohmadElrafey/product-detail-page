@@ -32,15 +32,15 @@ E2E uses the locally installed Google Chrome (`channel: 'chrome'`). Without Chro
 
 ### Environment
 
-All optional — see [`.env.example`](.env.example).
+All required — there are no defaults in the code. Locally put them in a `.env` file at the project root (git-ignored); in production set them in the hosting provider (Vercel → Project → Settings → Environment Variables). The build fails with a clear message if one is missing. Ask the team for the values.
 
-| Variable | Default |
+| Variable | What it is |
 | --- | --- |
-| `VITE_API_BASE_URL` | `https://api.easy-orders.net/api/v1` |
-| `VITE_STORE_SLUG` | `clear-theme` |
-| `VITE_PRODUCT_SLUG` | `Sneakers12` |
-| `VITE_CURRENCY` | `EGP` |
-| `VITE_LOCALE` | `en-US` |
+| `VITE_API_BASE_URL` | Base URL of the products API (e.g. `https://<host>/api/v1`) |
+| `VITE_STORE_SLUG` | Store identifier in the API |
+| `VITE_PRODUCT_SLUG` | Product shown on the page |
+| `VITE_CURRENCY` | ISO 4217 currency code used for prices |
+| `VITE_LOCALE` | BCP 47 locale for number/date formatting |
 
 ### Deployment
 

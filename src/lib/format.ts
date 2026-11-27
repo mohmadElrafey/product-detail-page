@@ -28,7 +28,7 @@ const dateTimeFormatter = new Intl.DateTimeFormat(env.locale, {
   minute: '2-digit',
 })
 
-/** "EGP 160" for whole amounts, "EGP 160.50" otherwise — never "EGP 160.5". */
+/** "<currency> 160" for whole amounts, "<currency> 160.50" otherwise — never "<currency> 160.5". */
 export const formatPrice = (value: number) =>
   (Number.isInteger(value) ? wholePriceFormatter : fractionalPriceFormatter).format(value)
 export const formatCompact = (value: number) => compactFormatter.format(value)
